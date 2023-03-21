@@ -1,0 +1,102 @@
+#' Implements the geometric spatial transfer of statistics from Spanish census sections to postal code areas
+#'
+#' @description Transfers the statistics available in a set of Spanish census sections from a given year
+#'              to the corresponding spatial set of Spanish official postal code areas.
+#'
+#' @author Jose M. Pavia, \email{pavia@@uv.es}
+#' @author Virgilio Perez \email{virgilio.perez@@uv.es}
+#' @references Goerlich, FJ (2022). Elaboracion de un mapa de codigos postales de Espana con recursos libres. Como evitar pagar a Correos 6000 euros por informacion de referencia. Working Papers Ivie n. 2022-3. Valencia: Ivie. \doi{10.12842/WPIVIE_0322}
+#' @references Pavia, JM and Cantarino, I (2017a). Can dasymetric mapping significantly improve population data reallocation in a dense urban area? *Geographical Analysis*, 49(2), 155-174. \doi{10.1111/gean.12112}
+#' @references Pavia, JM and Cantarino, I (2017b). Dasymetric distribution of votes in a dense city. *Applied Geography*, 86, 22-31. \doi{10.1016/j.apgeog.2017.06.021}
+#'
+#' @param x A data frame of order N x K (with K > 1) with the statistics to be spatially transferred/imputed.
+#'          The first column must contains the code of the census section to which the statistics belong to. The statistical nature
+#'          of the data columns must be of the same type. See the argument `data.type'. `
+#'
+#' @param year An integer number. Reference year of the census sections included in the first column of `x`.
+#'             Only 2001 and 2003 to 2022 are allowed.
+#'
+#' @param data.type A character string indicating the type of data to be transferred, either `"counts"` (aggregate statistics)
+#'                  or `"averages"` (mean, proportion or rate statistics). Default `"counts"`.
+#'
+#' @param all.units A `TRUE/FALSE` value indicating the postal code area division to be included
+#'                  in the output data frame. If `TRUE` all the postal code areas are included. If `FALSE` only
+#'                  those units for which a value is imputed are included. Default, `FALSE`.
+#'
+#' @param ... Other arguments to be passed to the function. Not currently used.
+#'
+#' @note The data that allows to transfer throughout time statistics among census sections
+#'       and/or postal code areas has been own elaboration by the authors using (i)
+#'       the Spanish Digital Cartography Files available in http://www.ine.es
+#'       that contain the digitalisation of the georeferenced polygons of the
+#'       census sections, according to UTM coordinates 28, 29, 30 and 31, and (ii)
+#'       the Cartography File of postal code areas developed by Goerlich (2022).
+#' @note Neither The Spanish Statistical Office (Instituto Nacional de Estadística) nor
+#'       Professor Goerlich had any involvement in preparing this package. They bear no responsibility on the results derived from using this package.
+#' @note Postal code areas have 2019 as reference year. It must be noted, however,
+#'       that they can be considered as almost time stationary. Spanish postal code areas are quite
+#'       stable over time.
+#'
+#' @return
+#' A list with the following components
+#'  \item{df}{ A data frame with the statistics spatially transferred to the postal code areas.}
+#'  \item{missing}{ A vector with the codes of the census sections included in `x` that are not available in the shp file of census sections corresponding to the `year.sscc.origin` division.}
+#'
+#' @export
+#'
+#' @seealso \code{\link{sc2cp}} \code{\link{cp2sc}}
+#' @importFrom stats aggregate
+#'
+#' @examples
+#' data <- structure(list(SSCC = c(0103701001, 4619401008, 4603103003),
+#'                        pop = c(12000L, 14000L, 11000L)),
+#'                        class = "data.frame", row.names = c(NA, -3L))
+#' example <- sc2cp(x = data, year = 2012, data.type = "counts")
+
+sc2cp <- function(x,
+                  year,
+                  data.type = "counts",
+                  all.units = FALSE,
+                  ...){
+
+ # inputs <- c(as.list(environment()), list(...))
+  if (!(year %in% c(2001L, 2003L:2022L)))
+    stop("ERROR: The reference year for the census sections is not allowed. Only 2001 or 2003 to 2022 is allowed.")
+  if (!(data.type %in% c("counts", "averages")))
+    stop("ERROR: The argument 'data.type' is improper. Only 'counts' and 'averages' are allowed.")
+
+  y.dest <- ifelse(year == 2001L, 2003L, ifelse(year == 2022L, 2021L, year + 1L))
+  testeo <- test_sscc_codes(bbdd  = x,
+                            y.origin = year,
+                            y.dest = y.dest)
+  bbdd <- testeo$bbdd
+  # SSCC year to SSCC 2019
+  if (year != 2019L){
+    years <- year:2019L
+    years <- years[years != 2002]
+
+    if (data.type == "counts"){
+      transfer_function <- impute_total
+    } else {
+      transfer_function <- impute_average
+    }
+    for (aa in 1L:(length(years) - 1L)){
+      bbdd <- transfer_function(bbdd = bbdd,
+                                y.origin = years[aa],
+                                y.dest = years[aa + 1L],
+                                all.units = all.units)
+    }
+  }
+  # SSCC 2019 to CCPP
+  if (data.type == "counts"){
+    transfer_function <- sscc2ccpp_total
+  } else {
+    transfer_function <- sscc2ccpp_average
+  }
+  bbdd <- transfer_function(bbdd = bbdd,
+                            all.units = all.units)
+
+  # return(list("df" = bbdd, "missing" = testeo$missing, "inputs" = inputs))
+  return(list("df" = bbdd, "missing" = testeo$missing))
+
+}

@@ -1,0 +1,11 @@
+8bb4cfa5ac88bf93857cf4559d7204cb *DESCRIPTION
+3be75ca94c9eedf04cc913243729ede9 *NAMESPACE
+792b78644984b5200afe284ebd436acf *R/auxiliary_functions.R
+704b3bee746a28e4a1457b3bee49a7f6 *R/cp2sc.R
+57d88483440a8189144ac293a0e1dafe *R/sc2cp.R
+f518d93eaf5b30b8f05f477c6ddcf9ce *R/sc2sc.R
+14cb07b059a7e67c7d3abf38d94ccec1 *R/sysdata.rda
+64fde28c9fec91906cfb8b40f02c7d6f *build/partial.rdb
+843d40ef4174944406b6688715cd2995 *man/cp2sc.Rd
+535a70f1252ae09e41c50ef72e7e5c9e *man/sc2cp.Rd
+2e71af4e7d8b64bb8e0a90042a84be94 *man/sc2sc.Rd
