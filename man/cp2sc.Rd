@@ -12,7 +12,7 @@ The first column must contains the codes of the postal code areas to which the s
 of the data columns must be of the same type. See the argument \verb{data.type'. }}
 
 \item{year}{An integer number. Reference year of the census sections to which the statistics are going to be transferred.
-Only 2001 and 2003 to 2022 are allowed.}
+Only 2001 and 2003 to 2023 are allowed.}
 
 \item{data.type}{A character string indicating the type of data to be transferred, either \code{"counts"} (aggregate statistics)
 or \code{"averages"} (mean, proportion or rate statistics). Default \code{"counts"}.}

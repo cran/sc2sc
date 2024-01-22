@@ -5,7 +5,7 @@
 #'               with reference in another year.
 #'
 #' @author Jose M. Pavia, \email{pavia@@uv.es}
-#' @author Virgilio Perez \email{virgilio.perez@@uv.es}
+#' @author Virgilio Perez, \email{virgilio.perez@@uv.es}
 #' @references Pavia, JM and Cantarino, I (2017a). Can dasymetric mapping significantly improve population data reallocation in a dense urban area? *Geographical Analysis*, 49(2), 155-174. \doi{10.1111/gean.12112}
 #' @references Pavia, JM and Cantarino, I (2017b). Dasymetric distribution of votes in a dense city. *Applied Geography*, 86, 22-31. \doi{10.1016/j.apgeog.2017.06.021}
 #'
@@ -14,10 +14,10 @@
 #'          of the data columns must be of the same type. See the argument `data.type'. `
 #'
 #' @param year.sscc.origin An integer number. Reference year of the census sections included in the first column of `x`.
-#'                         Only 2001 and 2003 to 2022 are allowed.
+#'                         Only 2001 and 2003 to 2023 are allowed.
 #'
 #' @param year.sscc.dest An integer number. Reference year of the census sections to which the statistics are going to be transferred.
-#'                       Only 2001 and 2003 to 2022 are allowed and it must be different than `year.sscc.origin`.
+#'                       Only 2001 and 2003 to 2023 are allowed and it must be different than `year.sscc.origin`.
 #'
 #' @param data.type A character string indicating the type of data to be transferred, either `"counts"` (aggregate statistics)
 #'                  or `"averages"` (mean, proportion or rate statistics). Default `"counts"`.
@@ -55,7 +55,7 @@
 #'                        X15.19 = c(4L, 7L, 13L, 0L, 0L, 13L, 1L, 5L, 30L, 48L, 1L),
 #'                        X20.24 = c(5L, 5L, 9L, 0L, 2L, 12L, 2L, 1L, 34L, 61L, 3L)),
 #'                        row.names = 1:11, class = "data.frame")
-#' example <- sc2sc(x = data, year.sscc.origin = 2020, year.sscc.dest = 2014)
+#' example <- sc2sc(x = data, year.sscc.origin = 2020, year.sscc.dest = 2019)
 
 sc2sc <- function(x,
                   year.sscc.origin,
@@ -63,6 +63,12 @@ sc2sc <- function(x,
                   data.type = "counts",
                   all.units = FALSE,
                   ...){
+
+  if (!is.data.frame(x)){
+    stop("ERROR: 'x' must be an object of class data.frame")
+  } else {
+    x <- as.data.frame(x)
+  }
 
  # inputs <- c(as.list(environment()), list(...))
   test_years(year.sscc.origin, year.sscc.dest)

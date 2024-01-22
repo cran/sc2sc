@@ -19,10 +19,10 @@ The first column must contains the codes of the census sections to which the sta
 of the data columns must be of the same type. See the argument \verb{data.type'. }}
 
 \item{year.sscc.origin}{An integer number. Reference year of the census sections included in the first column of \code{x}.
-Only 2001 and 2003 to 2022 are allowed.}
+Only 2001 and 2003 to 2023 are allowed.}
 
 \item{year.sscc.dest}{An integer number. Reference year of the census sections to which the statistics are going to be transferred.
-Only 2001 and 2003 to 2022 are allowed and it must be different than \code{year.sscc.origin}.}
+Only 2001 and 2003 to 2023 are allowed and it must be different than \code{year.sscc.origin}.}
 
 \item{data.type}{A character string indicating the type of data to be transferred, either \code{"counts"} (aggregate statistics)
 or \code{"averages"} (mean, proportion or rate statistics). Default \code{"counts"}.}
@@ -60,7 +60,7 @@ data <- structure(list(SSCC = c(3403601001, 3403701001, 3403801001, 3403901001,
                        X15.19 = c(4L, 7L, 13L, 0L, 0L, 13L, 1L, 5L, 30L, 48L, 1L),
                        X20.24 = c(5L, 5L, 9L, 0L, 2L, 12L, 2L, 1L, 34L, 61L, 3L)),
                        row.names = 1:11, class = "data.frame")
-example <- sc2sc(x = data, year.sscc.origin = 2020, year.sscc.dest = 2014)
+example <- sc2sc(x = data, year.sscc.origin = 2020, year.sscc.dest = 2019)
 }
 \references{
 Pavia, JM and Cantarino, I (2017a). Can dasymetric mapping significantly improve population data reallocation in a dense urban area? \emph{Geographical Analysis}, 49(2), 155-174. \doi{10.1111/gean.12112}
@@ -73,5 +73,5 @@ Pavia, JM and Cantarino, I (2017b). Dasymetric distribution of votes in a dense 
 \author{
 Jose M. Pavia, \email{pavia@uv.es}
 
-Virgilio Perez \email{virgilio.perez@uv.es}
+Virgilio Perez, \email{virgilio.perez@uv.es}
 }

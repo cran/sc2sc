@@ -14,7 +14,7 @@
 #'          of the data columns must be of the same type. See the argument `data.type'. `
 #'
 #' @param year An integer number. Reference year of the census sections included in the first column of `x`.
-#'             Only 2001 and 2003 to 2022 are allowed.
+#'             Only 2001 and 2003 to 2023 are allowed.
 #'
 #' @param data.type A character string indicating the type of data to be transferred, either `"counts"` (aggregate statistics)
 #'                  or `"averages"` (mean, proportion or rate statistics). Default `"counts"`.
@@ -59,13 +59,19 @@ sc2cp <- function(x,
                   all.units = FALSE,
                   ...){
 
- # inputs <- c(as.list(environment()), list(...))
-  if (!(year %in% c(2001L, 2003L:2022L)))
-    stop("ERROR: The reference year for the census sections is not allowed. Only 2001 or 2003 to 2022 is allowed.")
+  if (!is.data.frame(x)){
+    stop("ERROR: 'x' must be an object of class data.frame")
+  } else {
+    x <- as.data.frame(x)
+  }
+
+  # inputs <- c(as.list(environment()), list(...))
+  if (!(year %in% c(2001L, 2003L:2023L)))
+    stop("ERROR: The reference year for the census sections is not allowed. Only 2001 or 2003 to 2023 is allowed.")
   if (!(data.type %in% c("counts", "averages")))
     stop("ERROR: The argument 'data.type' is improper. Only 'counts' and 'averages' are allowed.")
 
-  y.dest <- ifelse(year == 2001L, 2003L, ifelse(year == 2022L, 2021L, year + 1L))
+  y.dest <- ifelse(year == 2001L, 2003L, ifelse(year == 2023L, 2022L, year + 1L))
   testeo <- test_sscc_codes(bbdd  = x,
                             y.origin = year,
                             y.dest = y.dest)
