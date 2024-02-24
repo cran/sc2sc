@@ -143,6 +143,7 @@ impute_total <- function(bbdd, y.origin, y.dest, all.units){
     salida <- as.data.frame(cbind(salida, matrix(0L, nrow(salida), length(variables))))
     names(salida)[-1L] <- variables
   }
+  salida <-  stats::aggregate(. ~ SSCC.Codes, salida, sum)
 
   # correspondencias no unitarias
   no.n1 <- !n1
@@ -157,7 +158,6 @@ impute_total <- function(bbdd, y.origin, y.dest, all.units){
       }
     }
   }
-  salida <-  stats::aggregate(. ~ SSCC.Codes, salida, sum)
   names(salida)[1] <- "SSCC"
   salida <- salida[order(salida$SSCC), ]
   return(salida)
