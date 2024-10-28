@@ -8,10 +8,11 @@
 #' @author Virgilio Perez, \email{virgilio.perez@@uv.es}
 #' @references Pavia, JM and Cantarino, I (2017a). Can dasymetric mapping significantly improve population data reallocation in a dense urban area? *Geographical Analysis*, 49(2), 155-174. \doi{10.1111/gean.12112}
 #' @references Pavia, JM and Cantarino, I (2017b). Dasymetric distribution of votes in a dense city. *Applied Geography*, 86, 22-31. \doi{10.1016/j.apgeog.2017.06.021}
+#' @references Perez, V and Pavia, JM  (2024b) Automating the transfer of data between census sections and postal codes areas over time. An application to Spain. *Investigaciones Regionales - Journal of Regional Research*, forthcoming. \doi{10.38191/iirr-jorr.24.057}
 #'
 #' @param x A data frame of order N x K (with K > 1) with the statistics to be spatially transferred/imputed.
 #'          The first column must contains the codes of the census sections to which the statistics belong to. The statistical nature
-#'          of the data columns must be of the same type. See the argument `data.type'. `
+#'          of the data columns must be of the same type. See the argument `data.type`.
 #'
 #' @param year.sscc.origin An integer number. Reference year of the census sections included in the first column of `x`.
 #'                         Only 2001 and 2003 to 2023 are allowed.

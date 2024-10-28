@@ -16,7 +16,7 @@ sc2sc(
 \arguments{
 \item{x}{A data frame of order N x K (with K > 1) with the statistics to be spatially transferred/imputed.
 The first column must contains the codes of the census sections to which the statistics belong to. The statistical nature
-of the data columns must be of the same type. See the argument \verb{data.type'. }}
+of the data columns must be of the same type. See the argument \code{data.type}.}
 
 \item{year.sscc.origin}{An integer number. Reference year of the census sections included in the first column of \code{x}.
 Only 2001 and 2003 to 2023 are allowed.}
@@ -66,6 +66,8 @@ example <- sc2sc(x = data, year.sscc.origin = 2020, year.sscc.dest = 2019)
 Pavia, JM and Cantarino, I (2017a). Can dasymetric mapping significantly improve population data reallocation in a dense urban area? \emph{Geographical Analysis}, 49(2), 155-174. \doi{10.1111/gean.12112}
 
 Pavia, JM and Cantarino, I (2017b). Dasymetric distribution of votes in a dense city. \emph{Applied Geography}, 86, 22-31. \doi{10.1016/j.apgeog.2017.06.021}
+
+Perez, V and Pavia, JM  (2024b) Automating the transfer of data between census sections and postal codes areas over time. An application to Spain. \emph{Investigaciones Regionales - Journal of Regional Research}, forthcoming. \doi{10.38191/iirr-jorr.24.057}
 }
 \seealso{
 \code{\link{sc2cp}} \code{\link{cp2sc}}

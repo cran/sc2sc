@@ -8,10 +8,12 @@
 #' @references Goerlich, FJ (2022). Elaboracion de un mapa de codigos postales de Espana con recursos libres. Como evitar pagar a Correos 6000 euros por informacion de referencia. Working Papers Ivie n. 2022-3. Valencia: Ivie. \doi{10.12842/WPIVIE_0322}
 #' @references Pavia, JM and Cantarino, I (2017a). Can dasymetric mapping significantly improve population data reallocation in a dense urban area? *Geographical Analysis*, 49(2), 155-174. \doi{10.1111/gean.12112}
 #' @references Pavia, JM and Cantarino, I (2017b). Dasymetric distribution of votes in a dense city. *Applied Geography*, 86, 22-31. \doi{10.1016/j.apgeog.2017.06.021}
+#' @references Perez, V and Pavia, JM (2024a). Improving Accuracy in Geospatial Information Transfer: A Population Density-Based Approach, in *6th International Conference on Advanced Research Methods and Analytics (CARMA 2024)*, Editorial Universitat Politecnica de Valencia, pp. 326-333. \doi{10.4995/CARMA2024.2024.17796}
+#' @references Perez, V and Pavia, JM  (2024b) Automating the transfer of data between census sections and postal codes areas over time. An application to Spain. *Investigaciones Regionales - Journal of Regional Research*, forthcoming. \doi{10.38191/iirr-jorr.24.057}
 #'
 #' @param x A data frame of order N x K (with K > 1) with the statistics to be spatially transferred/imputed.
 #'          The first column must contains the code of the census section to which the statistics belong to. The statistical nature
-#'          of the data columns must be of the same type. See the argument `data.type'. `
+#'          of the data columns must be of the same type. See the argument `data.type`.
 #'
 #' @param year An integer number. Reference year of the census sections included in the first column of `x`.
 #'             Only 2001 and 2003 to 2023 are allowed.
@@ -25,7 +27,7 @@
 #'
 #' @param ... Other arguments to be passed to the function. Not currently used.
 #'
-#' @note The data that allows to transfer throughout time statistics among census sections
+#' @note The data that allows to transfer statistics among census sections
 #'       and/or postal code areas has been own elaboration by the authors using (i)
 #'       the Spanish Digital Cartography Files available in http://www.ine.es
 #'       that contain the digitalisation of the georeferenced polygons of the

@@ -1,7 +1,7 @@
 Package: sc2sc
 Type: Package
 Title: Spatial Transfer of Statistics among Spanish Census Sections
-Version: 0.0.1-12
+Version: 0.0.1-14
 Authors@R: 
     c(person(given = "Virgilio",
            family = "Pérez",
@@ -19,17 +19,18 @@ Description: Transfers/imputes statistics among Spanish spatial polygons (census
     References: 
     Goerlich (2022) <doi:10.12842/WPIVIE_0322>.
     Pavía and Cantarino (2017a, b) <doi:10.1111/gean.12112>, <doi:10.1016/j.apgeog.2017.06.021>.
+    Pérez and Pavía (2024a, b) <doi:10.4995/CARMA2024.2024.17796>, <doi:10.38191/iirr-jorr.24.057>.
     Acknowledgements:
-    The authors wish to thank Consellería de Educación, Universidades y Empleo, Generalitat Valenciana (grant AICO/2021/257) and Ministerio de Economía e Innovación (grant PID2021-128228NB-I00) for supporting this research.
+    The authors wish to thank Consellería de Educación, Universidades y Empleo, Generalitat Valenciana (grant AICO/2021/257), Ministerio de Economía e Innovación (grant PID2021-128228NB-I00) and Fundación Mapfre for supporting this research.
 License: GPL (>= 2)
 Encoding: UTF-8
 Imports: stats
 RoxygenNote: 7.2.3
 Depends: R (>= 2.10)
 NeedsCompilation: no
-Packaged: 2024-02-24 09:40:56 UTC; mariaamparo
+Packaged: 2024-10-27 12:41:28 UTC; mariaamparo
 Author: Virgilio Pérez [aut] (<https://orcid.org/0000-0002-7628-2855>),
   Jose M. Pavía [aut, cre] (<https://orcid.org/0000-0002-0129-726X>)
 Maintainer: Jose M. Pavía <jose.m.pavia@uv.es>
 Repository: CRAN
-Date/Publication: 2024-02-24 10:00:02 UTC
+Date/Publication: 2024-10-28 01:00:02 UTC
