@@ -1,7 +1,7 @@
 Package: sc2sc
 Type: Package
 Title: Spatial Transfer of Statistics among Spanish Census Sections
-Version: 0.0.1-14
+Version: 0.0.1-16
 Authors@R: 
     c(person(given = "Virgilio",
            family = "Pérez",
@@ -28,9 +28,9 @@ Imports: stats
 RoxygenNote: 7.2.3
 Depends: R (>= 2.10)
 NeedsCompilation: no
-Packaged: 2024-10-27 12:41:28 UTC; mariaamparo
+Packaged: 2025-03-03 18:15:04 UTC; mariaamparo
 Author: Virgilio Pérez [aut] (<https://orcid.org/0000-0002-7628-2855>),
   Jose M. Pavía [aut, cre] (<https://orcid.org/0000-0002-0129-726X>)
 Maintainer: Jose M. Pavía <jose.m.pavia@uv.es>
 Repository: CRAN
-Date/Publication: 2024-10-28 01:00:02 UTC
+Date/Publication: 2025-03-13 11:10:02 UTC

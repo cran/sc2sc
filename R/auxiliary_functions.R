@@ -111,7 +111,7 @@ test_ccpp_codes <- function(bbdd){
 # This function transfer statistics of count variables available in a bbdd from year
 # y.origin to year y.dest
 
-impute_total <- function(bbdd, y.origin, y.dest, all.units){
+impute_total <- function(bbdd, y.origin, y.dest, all.units, na.rm){
   nombre.lista <- paste0("sscc_", substr(y.origin, 3L, 4L), "_to_", substr(y.dest, 3L, 4L))
   lista.origen <- get(nombre.lista)
   nombre.lista <- paste0("sscc_", substr(y.dest, 3L, 4L), "_to_", substr(y.origin, 3L, 4L))
@@ -135,30 +135,37 @@ impute_total <- function(bbdd, y.origin, y.dest, all.units){
     sscc.destino <- lista.origen1
     names( sscc.destino) <- c("SSCC", "SSCC.Codes")
     temp <- merge(bbdd, sscc.destino, all.x = TRUE)
-    temp[is.na(temp$SSCC.Codes), 2L:ncol(bbdd)] <- 0L
+    # temp[is.na(temp$SSCC.Codes), 2L:ncol(bbdd)] <- 0L
     temp <- temp[, -1L]
     salida <- merge(salida, temp, all.x = TRUE)
-    salida[is.na(salida)] <- 0L
+    # salida[is.na(salida)] <- 0L
   } else {
     salida <- as.data.frame(cbind(salida, matrix(0L, nrow(salida), length(variables))))
     names(salida)[-1L] <- variables
   }
-  salida <-  stats::aggregate(. ~ SSCC.Codes, salida, sum)
+  salida <-  stats::aggregate(salida[, -1], by = list(SSCC.Codes = salida$SSCC.Codes),
+                              sum, na.rm = na.rm)
+  salida[is.na(salida[ , 2L]) & !(salida$SSCC.Codes %in% unique(sscc.destino$SSCC.Codes)), -1L] <- 0L
 
   # correspondencias no unitarias
   no.n1 <- !n1
   if (sum(no.n1) > 0L){
     bbdd.no <- bbdd[no.n1, ]
+    destinos.visitados <- c()
     for (rr in 1L:nrow(bbdd.no)){
       destino <- lista.origen2[[ which(names(lista.origen2) == bbdd.no[rr, 1L]) ]]
+      destinos.visitados <- c(destinos.visitados, destino$sscc)
       reparto <- as.matrix(destino$w) %*% as.matrix(bbdd.no[rr, -1L])
       for (ii in 1L:nrow(reparto)){
         fila <- which(destino$sscc[ii] == salida[, 1L])
-        salida[fila, -1L] <- salida[fila, -1L] + reparto[ii, ]
+        salida[fila, -1L] <- sum(salida[fila, -1L], reparto[ii, ], na.rm = na.rm)
       }
     }
+    destinos.visitados <- c(unique(destinos.visitados), unique(sscc.destino$SSCC.Codes))
+    salida[!(salida$SSCC.Codes %in% destinos.visitados), -1L] <- NA
   }
   names(salida)[1] <- "SSCC"
+  names(salida)[-1L] <- variables
   salida <- salida[order(salida$SSCC), ]
   return(salida)
 }
@@ -168,7 +175,7 @@ impute_total <- function(bbdd, y.origin, y.dest, all.units){
 # This function transfer average statistics available in a bbdd from year
 # y.origin to year y.dest
 
-impute_average <- function(bbdd, y.origin, y.dest, all.units){
+impute_average <- function(bbdd, y.origin, y.dest, all.units, na.rm){
   nombre.lista <- paste0("sscc_", substr(y.origin, 3L, 4L), "_to_", substr(y.dest, 3L, 4L))
   lista.origen <- get(nombre.lista)
   nombre.lista <- paste0("sscc_", substr(y.dest, 3L, 4L), "_to_", substr(y.origin, 3L, 4L))
@@ -199,7 +206,7 @@ impute_average <- function(bbdd, y.origin, y.dest, all.units){
                                "SSCC.Codes" = n1)
     temp <- merge(bbdd, sscc.destino, all.y = TRUE)
     salida <- merge(salida, temp[, -1L], all.x = TRUE)
-    salida[is.na(salida)] <- 0L
+    salida[is.na(salida[, 2L]) & !(salida$SSCC.Codes %in% n1), -1L] <- 0L
   } else {
     salida <- as.data.frame(cbind(salida, matrix(0L, nrow(salida), length(variables))))
     names(salida)[-1L] <- variables
@@ -217,16 +224,29 @@ impute_average <- function(bbdd, y.origin, y.dest, all.units){
       for (ii in 1L:length(pesos)){
         fila <- which(bbdd$SSCC == donantes$sscc[ii])
         if (length(fila) > 0L){
-          pesos.acum <- pesos.acum + pesos[ii]
-          salida[salida$SSCC.Codes == no.n1[rr], -1L] <-
-            salida[salida$SSCC.Codes == no.n1[rr], -1L] + bbdd[fila, -1L] * pesos[ii]
+          if( !na.rm ){
+            pesos.acum <- pesos.acum + pesos[ii]
+            salida[salida$SSCC.Codes == no.n1[rr], -1L] <-
+              salida[salida$SSCC.Codes == no.n1[rr], -1L] + bbdd[fila, -1L] * pesos[ii]
+          } else {
+            if(!is.na(bbdd[fila, -1L])){
+              pesos.acum <- pesos.acum + pesos[ii]
+              salida[salida$SSCC.Codes == no.n1[rr], -1L] <-
+                salida[salida$SSCC.Codes == no.n1[rr], -1L] + bbdd[fila, -1L] * pesos[ii]
+            }
+            if (pesos.acum  == 0) {
+              salida[salida$SSCCPP.Codes == no.n1[rr], -1L] <- NA
+            }
+          }
         }
       }
       salida[salida$SSCC.Codes == no.n1[rr], -1L] <-
         salida[salida$SSCC.Codes == no.n1[rr], -1L]/pesos.acum
     }
+    salida[!(salida$SSCC.Codes %in% c(n1, no.n1)), -1L] <- NA
   }
   names(salida)[1] <- "SSCC"
+  names(salida)[-1L] <- variables
   salida <- salida[order(salida$SSCC), ]
   return(salida)
 
@@ -236,7 +256,7 @@ impute_average <- function(bbdd, y.origin, y.dest, all.units){
 # --------------------------------------
 # This function transfer statistics of count variables from 2019 sscc to 2019 ccpp
 
-sscc2ccpp_total <- function(bbdd, all.units){
+sscc2ccpp_total <- function(bbdd, all.units, na.rm){
   lista.origen <- get("sscc_to_ccpp")
   lista.destino <- get("ccpp_to_sscc")
   variables <- names(bbdd)[-1L]
@@ -257,30 +277,39 @@ sscc2ccpp_total <- function(bbdd, all.units){
     ccpp.destino <- data.frame("SSCC" = bbdd[n1, 1L],
                                "CCPP.Codes" = unlist(sapply(lista.origen[n1], function(x) x$ccpp)))
     temp <- merge(bbdd, ccpp.destino, all.x = TRUE)
-    temp[is.na(temp$CCPP.Codes), 2L:ncol(bbdd)] <- 0L
+    # temp[is.na(temp$CCPP.Codes), 2L:ncol(bbdd)] <- 0L
     temp <- temp[, -1L]
     salida <- merge(salida, temp, all.x = TRUE)
-    salida[is.na(salida)] <- 0L
+    salida <-  stats::aggregate(salida[, -1], by = list(CCPP.Codes = salida$CCPP.Codes),
+                                sum, na.rm = na.rm)
+    salida[is.na(salida[ , 2L]) & !(salida$CCPP.Codes %in% unique(ccpp.destino$CCPP.Codes)), -1L] <- 0L
+    # salida[is.na(salida)] <- 0L
   } else {
-    salida <- as.data.frame(cbind(salida, matrix(0L, nrow(salida), length(variables))))
+    salida <- as.data.frame(cbind(salida, matrix(0, nrow(salida), length(variables))))
     names(salida)[-1L] <- variables
+    ccpp.destino <- NULL
   }
+  # salida <-  stats::aggregate(. ~ CCPP.Codes, salida, sum, na.rm = na.rm)
 
   # correspondencias no unitarias
   no.n1 <- n.filas != 1L
   if (sum(no.n1) > 0L){
     bbdd.no <- bbdd[no.n1, ]
+    destinos.visitados <- c()
     for (rr in 1L:nrow(bbdd.no)){
       destino <- lista.origen[[ which(names(lista.origen) == bbdd.no[rr, 1L]) ]]
+      destinos.visitados <- c(destinos.visitados, destino$ccpp)
       reparto <- as.matrix(destino$w) %*% as.matrix(bbdd.no[rr, -1L])
       for (ii in 1L:nrow(reparto)){
         fila <- which(destino$ccpp[ii] == salida[, 1L])
-        salida[fila, -1L] <- salida[fila, -1L] + reparto[ii, ]
+        salida[fila, -1L] <- sum(c(salida[fila, -1L], reparto[ii, ]), na.rm = na.rm)
       }
     }
+    destinos.visitados <- c(unique(destinos.visitados), unique(ccpp.destino$CCPP.Codes))
+    salida[!(salida$CCPP.Codes %in% destinos.visitados), -1L] <- NA
   }
-  salida <-  stats::aggregate(. ~ CCPP.Codes, salida, sum)
   names(salida)[1] <- "CCPP"
+  names(salida)[-1L] <- variables
   salida <- salida[order(salida$CCPP), ]
   return(salida)
 }
@@ -289,7 +318,7 @@ sscc2ccpp_total <- function(bbdd, all.units){
 # --------------------------------------
 # This function transfer average statistics from 2019 sscc to 2019 ccpp
 
-sscc2ccpp_average <- function(bbdd, all.units){
+sscc2ccpp_average <- function(bbdd, all.units, na.rm){
   lista.origen <- get("sscc_to_ccpp")
   lista.destino <- get("ccpp_to_sscc")
   variables <- names(bbdd)[-1L]
@@ -310,7 +339,7 @@ sscc2ccpp_average <- function(bbdd, all.units){
                                                       function(x) x$sscc)), "CCPP.Codes" = n1)
     temp <- merge(bbdd, sscc.destino, all.y = TRUE)
     salida <- merge(salida, temp[, -1L], all.x = TRUE)
-    salida[is.na(salida)] <- 0L
+    salida[is.na(salida[, 2L]) & !(names(lista.destino) %in% n1), -1L] <- 0L
   } else {
     salida <- as.data.frame(cbind(salida, matrix(0L, nrow(salida), length(variables))))
     names(salida)[-1L] <- variables
@@ -326,16 +355,29 @@ sscc2ccpp_average <- function(bbdd, all.units){
       for (ii in 1L:length(pesos)){
         fila <- which(bbdd$SSCC == donantes$sscc[ii])
         if (length(fila) > 0L){
-          pesos.acum <- pesos.acum + pesos[ii]
-          salida[salida$CCPP.Codes == no.n1[rr], -1L] <-
+          if( !na.rm ){
+            pesos.acum <- pesos.acum + pesos[ii]
+            salida[salida$CCPP.Codes == no.n1[rr], -1L] <-
             salida[salida$CCPP.Codes == no.n1[rr], -1L] + bbdd[fila, -1L] * pesos[ii]
+          } else {
+            if(!is.na(bbdd[fila, -1L])){
+              pesos.acum <- pesos.acum + pesos[ii]
+              salida[salida$CCPP.Codes == no.n1[rr], -1L] <-
+              salida[salida$CCPP.Codes == no.n1[rr], -1L] + bbdd[fila, -1L] * pesos[ii]
+            }
+            if (pesos.acum  == 0) {
+              salida[salida$CCPP.Codes == no.n1[rr], -1L] <- NA
+            }
+          }
         }
       }
       salida[salida$CCPP.Codes == no.n1[rr], -1L] <-
         salida[salida$CCPP.Codes == no.n1[rr], -1L]/pesos.acum
     }
+     salida[!(salida$CCPP.Codes %in% c(n1, no.n1)), -1L] <- NA
   }
   names(salida)[1] <- "CCPP"
+  names(salida)[-1L] <- variables
   salida <- salida[order(salida$CCPP), ]
   return(salida)
 
@@ -345,7 +387,7 @@ sscc2ccpp_average <- function(bbdd, all.units){
 # --------------------------------------
 # This function transfer statistics of count variables from 2019 ccpp to 2019 sscc
 
-ccpp2sscc_total <- function(bbdd, all.units){
+ccpp2sscc_total <- function(bbdd, all.units, na.rm = na.rm){
   lista.origen <- get("ccpp_to_sscc")
   lista.destino <- get("sscc_to_ccpp")
   variables <- names(bbdd)[-1L]
@@ -366,30 +408,38 @@ ccpp2sscc_total <- function(bbdd, all.units){
     sscc.destino <- data.frame("CCPP" = bbdd[n1, 1L],
                                "SSCC.Codes" = unlist(sapply(lista.origen[n1], function(x) x$sscc)))
     temp <- merge(bbdd, sscc.destino, all.x = TRUE)
-    temp[is.na(temp$SSCC.Codes), 2L:ncol(bbdd)] <- 0L
+    # temp[is.na(temp$SSCC.Codes), 2L:ncol(bbdd)] <- 0L
     temp <- temp[, -1L]
     salida <- merge(salida, temp, all.x = TRUE)
-    salida[is.na(salida)] <- 0L
+    # salida[is.na(salida)] <- 0L
   } else {
     salida <- as.data.frame(cbind(salida, matrix(0L, nrow(salida), length(variables))))
     names(salida)[-1L] <- variables
   }
+  # salida <-  stats::aggregate(. ~ SSCC.Codes, salida, sum, na.rm = na.rm)
+  salida <-  stats::aggregate(salida[, -1], by = list(SSCC.Codes = salida$SSCC.Codes),
+                              sum, na.rm = na.rm)
+  salida[is.na(salida[ , 2L]) & !(salida$SSCC.Codes %in% unique(sscc.destino$SSCC.Codes)), -1L] <- 0L
 
   # correspondencias no unitarias
   no.n1 <- n.filas != 1L
   if (sum(no.n1) > 0L){
     bbdd.no <- bbdd[no.n1, ]
+    destinos.visitados <- c()
     for (rr in 1L:nrow(bbdd.no)){
       destino <- lista.origen[[ which(names(lista.origen) == bbdd.no[rr, 1L]) ]]
+      destinos.visitados <- c(destinos.visitados, destino$sscc)
       reparto <- as.matrix(destino$w) %*% as.matrix(bbdd.no[rr, -1L])
       for (ii in 1L:nrow(reparto)){
         fila <- which(destino$sscc[ii] == salida[, 1L])
-        salida[fila, -1L] <- salida[fila, -1L] + reparto[ii, ]
+        salida[fila, -1L] <- sum(c(salida[fila, -1L], reparto[ii, ]), na.rm = na.rm)
       }
     }
+    destinos.visitados <- c(unique(destinos.visitados), unique(sscc.destino$SSCC.Codes))
+    salida[!(salida$SSCC.Codes %in% destinos.visitados), -1L] <- NA
   }
-  salida <-  stats::aggregate(. ~ SSCC.Codes, salida, sum)
   names(salida)[1] <- "SSCC"
+  names(salida)[-1L] <- variables
   salida <- salida[order(salida$SSCC), ]
   return(salida)
 }
@@ -398,7 +448,7 @@ ccpp2sscc_total <- function(bbdd, all.units){
 # --------------------------------------
 # This function transfer average statistics from 2019 ccpp to 2019 sscc
 
-ccpp2sscc_average <- function(bbdd, all.units){
+ccpp2sscc_average <- function(bbdd, all.units, na.rm){
   lista.origen <- get("ccpp_to_sscc")
   lista.destino <- get("sscc_to_ccpp")
   variables <- names(bbdd)[-1L]
@@ -419,7 +469,7 @@ ccpp2sscc_average <- function(bbdd, all.units){
                                                       function(x) x$ccpp)), "SSCC.Codes" = n1)
     temp <- merge(bbdd, ccpp.destino, all.y = TRUE)
     salida <- merge(salida, temp[, -1L], all.x = TRUE)
-    salida[is.na(salida)] <- 0L
+    salida[is.na(salida) & !(names(lista.destino) %in% n1)] <- 0L
   } else {
     salida <- as.data.frame(cbind(salida, matrix(0L, nrow(salida), length(variables))))
     names(salida)[-1L] <- variables
@@ -435,16 +485,29 @@ ccpp2sscc_average <- function(bbdd, all.units){
       for (ii in 1L:length(pesos)){
         fila <- which(bbdd$CCPP == donantes$ccpp[ii])
         if (length(fila) > 0L){
-          pesos.acum <- pesos.acum + pesos[ii]
-          salida[salida$SSCC.Codes == no.n1[rr], -1L] <-
-            salida[salida$SSCC.Codes == no.n1[rr], -1L] + bbdd[fila, -1L] * pesos[ii]
+          if( !na.rm ){
+            pesos.acum <- pesos.acum + pesos[ii]
+            salida[salida$SSCC.Codes == no.n1[rr], -1L] <-
+              salida[salida$SSCC.Codes == no.n1[rr], -1L] + bbdd[fila, -1L] * pesos[ii]
+          } else {
+            if(!is.na(bbdd[fila, -1L])){
+              pesos.acum <- pesos.acum + pesos[ii]
+              salida[salida$SSCC.Codes == no.n1[rr], -1L] <-
+                salida[salida$SSCC.Codes == no.n1[rr], -1L] + bbdd[fila, -1L] * pesos[ii]
+            }
+            if (pesos.acum  == 0) {
+              salida[salida$SSCC.Codes == no.n1[rr], -1L] <- NA
+            }
+          }
         }
       }
       salida[salida$SSCC.Codes == no.n1[rr], -1L] <-
         salida[salida$SSCC.Codes == no.n1[rr], -1L]/pesos.acum
     }
+    salida[!(salida$SSCC.Codes %in% c(n1, no.n1)), -1L] <- NA
   }
   names(salida)[1] <- "SSCC"
+  names(salida)[-1L] <- variables
   salida <- salida[order(salida$SSCC), ]
   return(salida)
 

@@ -10,6 +10,7 @@ sc2sc(
   year.sscc.dest,
   data.type = "counts",
   all.units = FALSE,
+  na.rm = TRUE,
   ...
 )
 }
@@ -27,9 +28,12 @@ Only 2001 and 2003 to 2023 are allowed and it must be different than \code{year.
 \item{data.type}{A character string indicating the type of data to be transferred, either \code{"counts"} (aggregate statistics)
 or \code{"averages"} (mean, proportion or rate statistics). Default \code{"counts"}.}
 
-\item{all.units}{A \code{TRUE/FALSE} value indicating the census section units of the destination division to be included
+\item{all.units}{A \code{TRUE/FALSE} logical value indicating the census section units of the destination division to be included
 in the output data frame. If \code{TRUE} all the units of the destination division are included. If \code{FALSE} only
 those units for which a value is imputed are included. Default, \code{FALSE}.}
+
+\item{na.rm}{A \code{TRUE/FALSE} logical value indicating whether \code{NA} values should be stripped before
+the computations proceed. Default, \code{TRUE}.}
 
 \item{...}{Other arguments to be passed to the function. Not currently used.}
 }

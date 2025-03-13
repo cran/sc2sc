@@ -21,9 +21,12 @@
 #' @param data.type A character string indicating the type of data to be transferred, either `"counts"` (aggregate statistics)
 #'                  or `"averages"` (mean, proportion or rate statistics). Default `"counts"`.
 #'
-#' @param all.units A `TRUE/FALSE` value indicating the postal code area division to be included
+#' @param all.units A `TRUE/FALSE` logical value indicating the postal code area division to be included
 #'                  in the output data frame. If `TRUE` all the postal code areas are included. If `FALSE` only
 #'                  those units for which a value is imputed are included. Default, `FALSE`.
+#'
+#' @param na.rm A `TRUE/FALSE` logical value indicating whether `NA` values should be stripped before
+#'             the computations proceed. Default, `TRUE`.
 #'
 #' @param ... Other arguments to be passed to the function. Not currently used.
 #'
@@ -59,6 +62,7 @@ sc2cp <- function(x,
                   year,
                   data.type = "counts",
                   all.units = FALSE,
+                  na.rm = TRUE,
                   ...){
 
   if (!is.data.frame(x)){
@@ -92,7 +96,8 @@ sc2cp <- function(x,
       bbdd <- transfer_function(bbdd = bbdd,
                                 y.origin = years[aa],
                                 y.dest = years[aa + 1L],
-                                all.units = all.units)
+                                all.units = all.units,
+                                na.rm = na.rm)
     }
   }
   # SSCC 2019 to CCPP
@@ -102,7 +107,8 @@ sc2cp <- function(x,
     transfer_function <- sscc2ccpp_average
   }
   bbdd <- transfer_function(bbdd = bbdd,
-                            all.units = all.units)
+                            all.units = all.units,
+                            na.rm = na.rm)
 
   # return(list("df" = bbdd, "missing" = testeo$missing, "inputs" = inputs))
   return(list("df" = bbdd, "missing" = testeo$missing))

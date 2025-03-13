@@ -4,7 +4,7 @@
 \alias{cp2sc}
 \title{Implements the geometric spatial transfer of statistics from Spanish postal code areas to census sections}
 \usage{
-cp2sc(x, year, data.type = "counts", all.units = FALSE, ...)
+cp2sc(x, year, data.type = "counts", all.units = FALSE, na.rm = TRUE, ...)
 }
 \arguments{
 \item{x}{A data frame of order N x K (with K > 1) with the statistics to be spatially transferred/imputed.
@@ -20,6 +20,9 @@ or \code{"averages"} (mean, proportion or rate statistics). Default \code{"count
 \item{all.units}{A \code{TRUE/FALSE} value indicating the census section units of the destination division to be included
 in the output data frame. If \code{TRUE} all the units of the destination division are included. If \code{FALSE} only
 those units for which a value is imputed are included. Default, \code{FALSE}.}
+
+\item{na.rm}{A \code{TRUE/FALSE} logical value indicating whether \code{NA} values should be stripped before
+the computations proceed. Default, \code{TRUE}.}
 
 \item{...}{Other arguments to be passed to the function. Not currently used.}
 }

@@ -1,3 +1,9 @@
+## Package changes from previous sc2sc version 0.0.1-14
+
+This version corrects a bug in the sc2cp and cp2sc functions when transferring counts, due to a line of code misplaced. We wish to thank PhD Priscila Espinosa for warning us about this fact and suggesting extensions and possibilities for improving the package. In general, transfers of counts performed with the sc2cp and cp2sc functions, specially with sc2cp, obtained using version 0.0.1-14 are not reliable.
+
+The functions include now an additional argument: `na.rm`, which controls how missing values should be handled.
+
 ## Package changes from previous sc2sc version 0.0.1-12
 
 For transferring data from postal code areas to census sections, weights are now computed using population densities. See <doi:10.4995/CARMA2024.2024.17796> for details.
