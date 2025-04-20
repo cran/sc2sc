@@ -1,3 +1,7 @@
+## Package changes from previous sc2sc version 0.0.1-16
+
+This version corrects a bug introduced in the previous version of the package when adding the argument na.rm and more than a variable is transferred.
+
 ## Package changes from previous sc2sc version 0.0.1-14
 
 This version corrects a bug in the sc2cp and cp2sc functions when transferring counts, due to a line of code misplaced. We wish to thank PhD Priscila Espinosa for warning us about this fact and suggesting extensions and possibilities for improving the package. In general, transfers of counts performed with the sc2cp and cp2sc functions, specially with sc2cp, obtained using version 0.0.1-14 are not reliable.

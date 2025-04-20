@@ -158,7 +158,7 @@ impute_total <- function(bbdd, y.origin, y.dest, all.units, na.rm){
       reparto <- as.matrix(destino$w) %*% as.matrix(bbdd.no[rr, -1L])
       for (ii in 1L:nrow(reparto)){
         fila <- which(destino$sscc[ii] == salida[, 1L])
-        salida[fila, -1L] <- sum(salida[fila, -1L], reparto[ii, ], na.rm = na.rm)
+        salida[fila, -1L] <- colSums(rbind(salida[fila, -1L], reparto[ii, ]), na.rm = na.rm)
       }
     }
     destinos.visitados <- c(unique(destinos.visitados), unique(sscc.destino$SSCC.Codes))
@@ -229,7 +229,7 @@ impute_average <- function(bbdd, y.origin, y.dest, all.units, na.rm){
             salida[salida$SSCC.Codes == no.n1[rr], -1L] <-
               salida[salida$SSCC.Codes == no.n1[rr], -1L] + bbdd[fila, -1L] * pesos[ii]
           } else {
-            if(!is.na(bbdd[fila, -1L])){
+            if(all(!is.na(bbdd[fila, -1L]))){
               pesos.acum <- pesos.acum + pesos[ii]
               salida[salida$SSCC.Codes == no.n1[rr], -1L] <-
                 salida[salida$SSCC.Codes == no.n1[rr], -1L] + bbdd[fila, -1L] * pesos[ii]
