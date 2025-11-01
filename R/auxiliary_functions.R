@@ -3,8 +3,8 @@
 test_years <- function(y.origin, y.dest){
    if ((y.origin - y.dest) == 0L)
      stop("ERROR: The origin and destination reference years must be different.")
-   if (!all(c(y.origin, y.dest) %in% c(2001L, 2003L:2023L)))
-     stop("ERROR: The origin and destination reference years allowed are 2001 and 2003 to 2023.")
+   if (!all(c(y.origin, y.dest) %in% c(2001L, 2003L:2025L)))
+     stop("ERROR: The origin and destination reference years allowed are 2001 and 2003 to 2025.")
 }
 
 # --------------------------------------

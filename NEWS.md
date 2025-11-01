@@ -1,3 +1,7 @@
+## Package changes from previous sc2sc version 0.0.1-17
+
+This new version extends to year 2025 the horizon for making transfers. 
+
 ## Package changes from previous sc2sc version 0.0.1-16
 
 This version corrects a bug introduced in the previous version of the package when adding the argument na.rm and more than a variable is transferred.

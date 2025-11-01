@@ -15,10 +15,10 @@
 #'          of the data columns must be of the same type. See the argument `data.type`.
 #'
 #' @param year.sscc.origin An integer number. Reference year of the census sections included in the first column of `x`.
-#'                         Only 2001 and 2003 to 2023 are allowed.
+#'                         Only 2001 and 2003 to 2025 are allowed.
 #'
 #' @param year.sscc.dest An integer number. Reference year of the census sections to which the statistics are going to be transferred.
-#'                       Only 2001 and 2003 to 2023 are allowed and it must be different than `year.sscc.origin`.
+#'                       Only 2001 and 2003 to 2025 are allowed and it must be different than `year.sscc.origin`.
 #'
 #' @param data.type A character string indicating the type of data to be transferred, either `"counts"` (aggregate statistics)
 #'                  or `"averages"` (mean, proportion or rate statistics). Default `"counts"`.

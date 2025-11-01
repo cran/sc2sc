@@ -12,7 +12,7 @@ The first column must contains the code of the census section to which the stati
 of the data columns must be of the same type. See the argument \code{data.type}.}
 
 \item{year}{An integer number. Reference year of the census sections included in the first column of \code{x}.
-Only 2001 and 2003 to 2023 are allowed.}
+Only 2001 and 2003 to 2025 are allowed.}
 
 \item{data.type}{A character string indicating the type of data to be transferred, either \code{"counts"} (aggregate statistics)
 or \code{"averages"} (mean, proportion or rate statistics). Default \code{"counts"}.}

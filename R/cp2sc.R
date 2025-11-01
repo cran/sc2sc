@@ -16,7 +16,7 @@
 #'          of the data columns must be of the same type. See the argument `data.type`.
 #'
 #' @param year An integer number. Reference year of the census sections to which the statistics are going to be transferred.
-#'             Only 2001 and 2003 to 2023 are allowed.
+#'             Only 2001 and 2003 to 2025 are allowed.
 #'
 #' @param data.type A character string indicating the type of data to be transferred, either `"counts"` (aggregate statistics)
 #'                  or `"averages"` (mean, proportion or rate statistics). Default `"counts"`.
@@ -73,8 +73,8 @@ cp2sc <- function(x,
   }
 
   #inputs <- c(as.list(environment()), list(...))
-  if (!(year %in% c(2001L, 2003L:2023L)))
-    stop("ERROR: The reference year for the census sections is not allowed. Only 2001 or 2003 to 2023 is allowed.")
+  if (!(year %in% c(2001L, 2003L:2025L)))
+    stop("ERROR: The reference year for the census sections is not allowed. Only 2001 or 2003 to 2025 is allowed.")
   if (!(data.type %in% c("counts", "averages")))
     stop("ERROR: The argument 'data.type' is improper. Only 'counts' and 'averages' are allowed.")
   testeo <- test_ccpp_codes(bbdd  = x)
